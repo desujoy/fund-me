@@ -1,14 +1,17 @@
-// SPDX-License-Identifier: MIT 
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import { FundMe } from "../src/FundMe.sol";
-import { Test } from "forge-std/Test.sol";
+import {FundMe} from "../src/FundMe.sol";
+import {Test} from "forge-std/Test.sol";
+import {DeployFundMe} from "../script/DeployFundMe.s.sol";
 
 contract FundMeTest is Test {
     FundMe fundMe;
 
     function setUp() public {
-        fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        // fundMe = new FundMe(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        DeployFundMe deployFundMe = new DeployFundMe();
+        fundMe = deployFundMe.run();
     }
 
     function testMinimumUsd() public {
@@ -17,12 +20,20 @@ contract FundMeTest is Test {
     }
 
     function testOwner() public {
-        assertEq(fundMe.getOwner(), address(this), "owner should be this contract");
+        assertEq(
+            fundMe.getOwner(),
+            msg.sender,
+            "owner should be this contract"
+        );
     }
 
     function testFund() public payable {
         uint256 ethAmount = 1e18;
         fundMe.fund{value: ethAmount}();
-        assertEq(fundMe.getAddressToAmountFunded(address(this)), ethAmount, "ethAmount should be 1e18");
+        assertEq(
+            fundMe.getAddressToAmountFunded(address(this)),
+            ethAmount,
+            "ethAmount should be 1e18"
+        );
     }
 }
