@@ -28,7 +28,13 @@ jobs:
           forge build --sizes
         id: build
 
-      - name: Run Forge tests
+      - name: Run Forge tests on Mainnet
         run: |
-          forge test -vvv --rpc-url ${{ vars.RPC_URL }}
-        id: test
+          forge test -vvv --rpc-url ${{ vars.MAINNET_RPC_URL }}
+        id: test-mainnet
+        
+      - name: Run Forge tests on Sepolia
+        run: |
+          forge test -vvv --rpc-url ${{ vars.SEPOLIA_RPC_URL }}
+        id: test-sepolia
+
